@@ -1,0 +1,24 @@
+{
+  "menu": {
+    "home": "Strona główna",
+    "login": "Zaloguj się",
+    "register": "Zarejestruj się",
+    "dashboard": "Panel klienta",
+    "logout": "Wyloguj się"
+  },
+  "sidebar": {
+    "categories": "Kategorie gier",
+    "lotto": "Lotto",
+    "miniLotto": "Mini Lotto",
+    "multiMulti": "Multi Multi",
+    "eurojackpot": "Eurojackpot",
+    "ekstraPensja": "Ekstra Pensja"
+  },
+  "footer": {
+    "about": "O nas",
+    "contact": "Kontakt",
+    "privacy": "Polityka prywatności",
+    "terms": "Regulamin",
+    "copyright": "© 2024 MaxLotto.pl. Wszelkie prawa zastrzeżone."
+  }
+}
