@@ -20,7 +20,7 @@ export default function SoftwareCard({ software }: SoftwareCardProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
-  const handlePurchase = async () => {
+  const handlePurchase = async (paymentMethod: 'paypal' | 'tpay') => {
     if (!session) {
       router.push('/login')
       return
@@ -36,6 +36,7 @@ export default function SoftwareCard({ software }: SoftwareCardProps) {
         },
         body: JSON.stringify({
           softwareId: software.id,
+          paymentMethod,
         }),
       })
 
@@ -61,15 +62,26 @@ export default function SoftwareCard({ software }: SoftwareCardProps) {
         {software.description && (
           <p className="text-gray-600 mb-4">{software.description}</p>
         )}
-        <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-blue-600">{software.price} PLN</span>
-          <button
-            onClick={handlePurchase}
-            disabled={loading}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 transition-colors"
-          >
-            {loading ? 'Przetwarzanie...' : 'Kup teraz'}
-          </button>
+        <div className="space-y-4">
+          <div className="text-center">
+            <span className="text-3xl font-bold text-blue-600">{software.price} PLN</span>
+          </div>
+          <div className="space-y-2">
+            <button
+              onClick={() => handlePurchase('paypal')}
+              disabled={loading}
+              className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 transition-colors"
+            >
+              {loading ? 'Przetwarzanie...' : '💳 PayPal'}
+            </button>
+            <button
+              onClick={() => handlePurchase('tpay')}
+              disabled={loading}
+              className="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 transition-colors"
+            >
+              {loading ? 'Przetwarzanie...' : '🏦 TPay'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

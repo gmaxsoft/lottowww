@@ -46,19 +46,49 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Tutaj można dodać integrację z bramką płatności
-    // Na potrzeby demonstracji, symulujemy sukces płatności
-
-    // Zaktualizuj status zamówienia na "paid"
-    await prisma.order.update({
-      where: { id: order.id },
-      data: { status: 'paid' }
+    // Integracja z płatnościami - wybór metody płatności
+    // Pobierz dane użytkownika
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
     })
 
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Użytkownik nie znaleziony' },
+        { status: 404 }
+      )
+    }
+
+    const { paymentMethod = 'paypal' } = await request.json()
+
+    let paymentUrl = ''
+
+    if (paymentMethod === 'paypal') {
+      const { createPayPalPayment } = await import('@/lib/payments/paypal')
+      const payment = await createPayPalPayment(
+        software.price,
+        `Oprogramowanie: ${software.name}`,
+        `${process.env.NEXTAUTH_URL}/api/payments/paypal/success?orderId=${order.id}`,
+        `${process.env.NEXTAUTH_URL}/api/payments/paypal/cancel?orderId=${order.id}`
+      )
+      paymentUrl = payment.links.find((link: any) => link.rel === 'approval_url').href
+    } else if (paymentMethod === 'tpay') {
+      const { createTPayPayment } = await import('@/lib/payments/tpay')
+      const payment = await createTPayPayment({
+        id: order.id,
+        amount: software.price,
+        description: `Oprogramowanie: ${software.name}`,
+        customerEmail: user.email,
+        returnUrl: `${process.env.NEXTAUTH_URL}/api/payments/tpay/success?orderId=${order.id}`,
+        notifyUrl: `${process.env.NEXTAUTH_URL}/api/payments/tpay/notify`
+      })
+      paymentUrl = payment.paymentUrl
+    }
+
     return NextResponse.json({
-      message: 'Zamówienie zostało utworzone i opłacone',
+      message: 'Zamówienie zostało utworzone',
       orderId: order.id,
-      redirect: `/dashboard?success=1`
+      paymentUrl
     })
   } catch (error) {
     console.error('Błąd tworzenia zamówienia:', error)

@@ -185,6 +185,17 @@ Aplikacja jest w pełni responsywna i działa na:
 DATABASE_URL="mysql://user:pass@prod-host:3306/maxlotto_db"
 NEXTAUTH_SECRET="strong-production-secret"
 NEXTAUTH_URL="https://maxlotto.pl"
+
+# PayPal Configuration
+PAYPAL_CLIENT_ID="your-production-paypal-client-id"
+PAYPAL_CLIENT_SECRET="your-production-paypal-client-secret"
+PAYPAL_MODE="live"
+
+# TPay Configuration
+TPAY_MERCHANT_ID="your-production-tpay-merchant-id"
+TPAY_SECURITY_CODE="your-production-tpay-security-code"
+TPAY_API_KEY="your-production-tpay-api-key"
+TPAY_MODE="production"
 ```
 
 ### Budowa i deployment
